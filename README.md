@@ -57,6 +57,9 @@ func main() {
 
 	// Say Hello
 	printResponse(nodes.Run("echo hello"))
+	
+	// Use pipes
+	printResponse(nodes.Run("echo \"abc\" | tr \"a-z\" \"A-Z\""))
 
 	// Close the connections to the cluster
 	nodes.Close()
