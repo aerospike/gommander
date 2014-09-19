@@ -17,6 +17,7 @@ package gommander
 import (
 	"bytes"
 	"code.google.com/p/go.crypto/ssh"
+	"errors"
 	"io"
 	"io/ioutil"
 	"strconv"
@@ -69,14 +70,6 @@ type Response struct {
 	Stderr *bytes.Buffer
 }
 
-type Error struct {
-	message string
-}
-
-func (e *Error) Error() string {
-	return e.message
-}
-
 func NewNode(host string, port uint, user string, auth []ssh.AuthMethod) *Node {
 	return &Node{
 		Host: host,
@@ -123,7 +116,7 @@ func (n *Node) Connect() error {
 func (n *Node) Close() error {
 
 	if n.requests == nil {
-		return &Error{message: "Not listening."}
+		return errors.New("Not listening.")
 	}
 
 	close(n.requests)
@@ -141,7 +134,7 @@ func (n *Node) Execute(req Request) error {
 func (n *Node) listen() error {
 
 	if n.requests != nil {
-		return &Error{message: "Already listening."}
+		return errors.New("Already listening.")
 	}
 
 	n.requests = make(chan Request)
