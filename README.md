@@ -39,7 +39,7 @@ func printResponse(responses chan Response, err error) {
 func main() {
 
 	// Parse the ssh key. This is the Vagrant SSH private key.
-	vagrantKey, err := Parsekey("/Users/chris/.vagrant.d/insecure_private_key")
+	vagrantKey, err := Parsekey("/Users/ME/.vagrant.d/insecure_private_key")
 	if err != nil {
 		panic(err)
 	}
