@@ -1,0 +1,10 @@
+[
+  { "run": "rm -f inspect.py" },
+  { "copy": {
+      "src": "inspect.py", 
+      "dest": "inspect.py"
+  }},
+  { "run": "chmod +x inspect.py" },
+  { "run": "./inspect.py" },
+  { "run": "rm -f inspect.py" }
+]
