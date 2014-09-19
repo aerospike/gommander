@@ -44,12 +44,10 @@ func (e *Executor) printResponses(responses chan Response, err error) {
 		panic(err)
 	}
 
-	buffer := bytes.Buffer{}
-
 	for r := range responses {
 
 		println(color("--------------------------------------------------------------------------------", IBlack))
-		buffer.Reset()
+
 		exittag := color(column(fmt.Sprintf("%d", r.ExitCode), 3), White)
 		datetime := time.Now()
 		datetimetag := color(datetime.Format(layout), IBlack)
