@@ -18,7 +18,6 @@ func printResponse(responses chan Response, err error) {
 			fmt.Printf("\033[0;97m%s > %s\033[0m\n", r.Node.Host, r.Stdout.String())
 		default: // Failure!
 			fmt.Printf("\033[0;91m%s > %s\033[0m\n", r.Node.Host, r.Stderr.String())
-
 		}
 	}
 }
