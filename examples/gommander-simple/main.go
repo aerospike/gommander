@@ -157,10 +157,10 @@ func main() {
 
 	}
 
-	// Define the cluster.
+	// Define the set of nodes we are using.
 	// The following are private IPs for Vagrant
 	// Change, remove or add new ones to your heart's desire
-	cluster := NewCluster()
+	nodes := NodeList{}
 
 	for _, arg := range flag.Args() {
 
@@ -187,13 +187,10 @@ func main() {
 		}
 
 		// This is the important step
-		cluster.AddNode(NewNode(host, uint(port), user, authMethods))
+		nodes = append(nodes, NewNode(host, uint(port), user, authMethods))
 	}
 
-	// Slice of all nodes
-	nodes := cluster.Nodes()
-
-	// Connect to the cluster
+	// Connect to the nodes
 	nodes.Connect()
 
 	// What is the hostname?

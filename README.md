@@ -46,15 +46,13 @@ func main() {
 	// Array of auth methods, needed for authenticating w/ each node
 	authMethods := []ssh.AuthMethod{ssh.PublicKeys(vagrantKey)}
 
-	// Define a cluster
-	cluster := NewCluster()
-	cluster.AddNode(NewNode("127.0.0.1", 2221, "vagrant", authMethods))
-	cluster.AddNode(NewNode("127.0.0.1", 2222, "vagrant", authMethods))
+	// The nodes we are using
+	nodes := NodeList{
+		NewNode("127.0.0.1", 2221, "vagrant", authMethods),
+		NewNode("127.0.0.1", 2222, "vagrant", authMethods),
+	}
 
-	// Slice of all nodes
-	nodes := cluster.Nodes()
-
-	// Connect to the cluster
+	// Connect to the nodes
 	nodes.Connect()
 
 	// Say Hello
@@ -62,7 +60,6 @@ func main() {
 
 	// Close the connections to the cluster
 	nodes.Close()
-
 }
 ```
 

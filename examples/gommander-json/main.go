@@ -72,8 +72,10 @@ func main() {
 
 	commands := commandsi.([]interface{})
 
-	// define the cluster
-	cluster := NewCluster()
+	// define the list of nodes
+	nodes := NodeList{}
+
+	// add nodes
 	for _, h := range hosts {
 		auth := []ssh.AuthMethod{}
 
@@ -89,13 +91,10 @@ func main() {
 			auth = append(auth, ssh.PublicKeys(signer))
 		}
 
-		cluster.AddNode(NewNode(h.Host, h.Port, h.Username, auth))
+		nodes = append(nodes, NewNode(h.Host, h.Port, h.Username, auth))
 	}
 
-	// slice of all nodes
-	nodes := cluster.Nodes()
-
-	// connect to the cluster
+	// connect to the nodes
 	nodes.Connect()
 
 	// setup executor
@@ -134,6 +133,6 @@ func main() {
 		}
 	}
 
-	// close connections to cluster
+	// close connections to nodes
 	nodes.Close()
 }
