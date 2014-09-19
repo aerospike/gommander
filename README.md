@@ -68,7 +68,7 @@ func main() {
 
 ## License
 
-The Aerospike Python Client is made availabled under the terms of the
+This software is made availabled under the terms of the
 Apache License, Version 2, as stated in the file ``LICENSE``.
 
 Individual files may be made available under their own specific license,
