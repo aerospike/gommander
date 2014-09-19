@@ -41,12 +41,9 @@ func printResponses(responses chan Response, err error) {
 		panic(err)
 	}
 
-	buffer := bytes.Buffer{}
-
 	for r := range responses {
 
 		println("--------------------------------------------------------------------------------")
-		buffer.Reset()
 
 		exit := column(fmt.Sprintf("%d", r.ExitCode), 3)
 		host := column(r.Node.Host, 15)

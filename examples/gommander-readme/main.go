@@ -1,16 +1,3 @@
-# Gommander
-
-A Go library for commanding multiple servers over ssh. This library uses crypto.go/ssh for the basic SSH functionality, but provides the ability to:
-
-- Execute commands across all or subset of servers.
-- Copy files to the remote server(s).
-- Write files on the remote server(s).
-
-# Usage
-
-The following is an example of managing a cluster of Vagrant instances.
-
-```go
 package main
 
 import (
@@ -39,7 +26,7 @@ func printResponse(responses chan Response, err error) {
 func main() {
 
 	// Parse the ssh key. This is the Vagrant SSH private key.
-	vagrantKey, err := Parsekey("/Users/chris/.vagrant.d/insecure_private_key")
+	vagrantKey, err := Parsekey("/Users/ME/.vagrant.d/insecure_private_key")
 	if err != nil {
 		panic(err)
 	}
@@ -65,13 +52,3 @@ func main() {
 	nodes.Close()
 
 }
-```
-
-## License
-
-The Aerospike Python Client is made availabled under the terms of the
-Apache License, Version 2, as stated in the file ``LICENSE``.
-
-Individual files may be made available under their own specific license,
-all compatible with Apache License, Version 2. Please see individual
-files for details.
