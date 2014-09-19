@@ -6,7 +6,7 @@ A Go library for commanding multiple servers over ssh. This library uses crypto.
 - Copy files to the remote server(s).
 - Write files on the remote server(s).
 
-# Usage
+## Usage
 
 The following is an example of managing a cluster of Vagrant instances.
 
