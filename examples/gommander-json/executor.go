@@ -17,7 +17,6 @@ package main
 import (
 	. "github.com/aerospike/gommander"
 
-	"bytes"
 	"fmt"
 	"strings"
 	"time"
