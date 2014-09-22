@@ -24,17 +24,6 @@ import (
 
 type NodeList []*Node
 
-func (l NodeList) Drop(n int) NodeList {
-	return l[n:len(l)]
-}
-
-func (l NodeList) Take(n int) NodeList {
-	if n > len(l) {
-		n = len(l)
-	}
-	return l[0:n]
-}
-
 func (l NodeList) Filter(fn func(*Node) bool) NodeList {
 	var p []*Node
 	for _, v := range l {
