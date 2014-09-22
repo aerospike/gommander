@@ -23,6 +23,7 @@ import (
 	"strconv"
 )
 
+// Node describes a server which will be managed.
 type Node struct {
 
 	// Address of the node
@@ -43,6 +44,8 @@ type Node struct {
 	requests chan Request
 }
 
+// Request represents the command, stdin and callback responder
+// to be executed by a Node.
 type Request struct {
 
 	// Command to execute
@@ -55,6 +58,8 @@ type Request struct {
 	Respond func(Response) error
 }
 
+// Response represents the result of a command executed on a Node, including exit code,
+// stdout and stderr.
 type Response struct {
 
 	// Node
@@ -70,6 +75,9 @@ type Response struct {
 	Stderr *bytes.Buffer
 }
 
+// Create a new Node.
+// The []AuthMethod used for each Node, can be unique to the specific Node or
+// share amongst Nodes.
 func NewNode(host string, port uint, user string, auth []ssh.AuthMethod) *Node {
 	return &Node{
 		Host: host,
@@ -79,6 +87,7 @@ func NewNode(host string, port uint, user string, auth []ssh.AuthMethod) *Node {
 	}
 }
 
+// A utility function to simplify the reasing and parsing of SSH Private Keys.
 func Parsekey(file string) (private ssh.Signer, err error) {
 
 	privateBytes, err := ioutil.ReadFile(file)
@@ -94,6 +103,7 @@ func Parsekey(file string) (private ssh.Signer, err error) {
 	return
 }
 
+// Connect to the node over SSH.
 func (n *Node) Connect() error {
 
 	config := &ssh.ClientConfig{
@@ -113,6 +123,7 @@ func (n *Node) Connect() error {
 	return nil
 }
 
+// Close the SSH connection.
 func (n *Node) Close() error {
 
 	if n.requests == nil {
@@ -126,11 +137,15 @@ func (n *Node) Close() error {
 	return nil
 }
 
+// Execute a request against the Node.
+// This sends the request to the Node receive channel, for processing.
 func (n *Node) Execute(req Request) error {
 	n.requests <- req
 	return nil
 }
 
+// Listens for Requests on the Node receive channel, then processes
+// the request and sends the Response to channel specific by the Request.
 func (n *Node) listen() error {
 
 	if n.requests != nil {
@@ -154,6 +169,7 @@ func (n *Node) listen() error {
 	return nil
 }
 
+// Execute a Request and populate the Response.
 func (n *Node) execute(req *Request, res *Response) error {
 
 	session, err := n.client.NewSession()

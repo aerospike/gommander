@@ -24,6 +24,11 @@ import (
 
 type NodeList []*Node
 
+// Filter a NodeList based on a predicate function.
+// The predicate function should return true, if the Node in the
+// list should be kept. Otherwise false should be returned.
+// The result is a new NodeList containing the Nodes which the
+// predicate function returned true for.
 func (l NodeList) Filter(fn func(*Node) bool) NodeList {
 	var p []*Node
 	for _, v := range l {
@@ -34,6 +39,7 @@ func (l NodeList) Filter(fn func(*Node) bool) NodeList {
 	return p
 }
 
+// Connect each Node in NodeList to their respective servers.
 func (l NodeList) Connect() error {
 
 	for _, n := range l {
@@ -45,6 +51,7 @@ func (l NodeList) Connect() error {
 	return nil
 }
 
+// Close the connections for each Node in the NodeList.
 func (l NodeList) Close() error {
 
 	for _, n := range l {
@@ -56,6 +63,8 @@ func (l NodeList) Close() error {
 	return nil
 }
 
+// Perform an operation against each Node in the NodeList.
+// The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Each(fn func(*Node, func(Response) error) error) (chan Response, error) {
 
 	var wg sync.WaitGroup
@@ -84,6 +93,8 @@ func (l NodeList) Each(fn func(*Node, func(Response) error) error) (chan Respons
 	return responses, nil
 }
 
+// Execute a Request against each Node in the NodeList.
+// The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Execute(req Request) (chan Response, error) {
 	return l.Each(func(n *Node, respond func(Response) error) error {
 		req.Respond = respond
@@ -91,6 +102,8 @@ func (l NodeList) Execute(req Request) (chan Response, error) {
 	})
 }
 
+// Run a command against each Node in the NodeList.
+// The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Run(command string) (chan Response, error) {
 	req := Request{
 		Command: command,
@@ -100,6 +113,8 @@ func (l NodeList) Run(command string) (chan Response, error) {
 	return l.Execute(req)
 }
 
+// Copy a file from src to dest on each Node.
+// The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 
 	command := "/usr/bin/scp -qrt ./"
@@ -135,6 +150,8 @@ func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 	})
 }
 
+// Write a file from at dest on each Node.
+// The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Write(dest string, content *bytes.Reader) (chan Response, error) {
 
 	command := "/usr/bin/scp -qrt ./"
