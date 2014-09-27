@@ -210,7 +210,7 @@ func main() {
 
 	// Copy a file to the servers
 	run("copy hello.txt", func() (chan Response, error) {
-		return nodes.CopyFile("hello.txt", "hello.txt")
+		return nodes.Copy("hello.txt", "hello.txt")
 	})
 
 	// Read the file contents
@@ -225,7 +225,7 @@ func main() {
 
 	// Copy an script to the servers
 	run("copy hello.py", func() (chan Response, error) {
-		return nodes.Take(2).CopyFile("hello.py", "hello.py")
+		return nodes.Copy("hello.py", "hello.py")
 	})
 
 	// make it executable

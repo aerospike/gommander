@@ -124,7 +124,7 @@ func main() {
 					dest := args["dest"].(string)
 					desc := fmt.Sprintf("copy %s => %s", src, dest)
 					executor.exec(desc, func() (chan Response, error) {
-						return nodes.CopyFile(src, dest)
+						return nodes.Copy(src, dest)
 					})
 				default:
 					panic("Command 'copy' is invalid.")
