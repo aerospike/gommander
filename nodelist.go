@@ -117,7 +117,7 @@ func (l NodeList) Run(command string) (chan Response, error) {
 // The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 
-	command := "/usr/bin/scp -qrt ./"
+	command := "cat - > " + dest
 	input := new(bytes.Buffer)
 
 	in, err := os.Open(src)
@@ -127,16 +127,9 @@ func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 
 	defer in.Close()
 
-	inStat, err := in.Stat()
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Fprintln(input, "C0644", inStat.Size(), dest)
 	if _, err = io.Copy(input, in); err != nil {
 		return nil, err
 	}
-	fmt.Fprint(input, "\x00")
 
 	return l.Each(func(n *Node, respond func(Response) error) error {
 
@@ -154,14 +147,13 @@ func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 // The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Write(dest string, content *bytes.Reader) (chan Response, error) {
 
-	command := "/usr/bin/scp -qrt ./"
+	command := "cat - > " + dest
 	stdin := new(bytes.Buffer)
 
-	fmt.Fprintln(stdin, "C0644", content.Len(), dest)
+	fmt.Fprintln(stdin, "C0755", content.Len(), dest)
 	if _, err := io.Copy(stdin, content); err != nil {
 		return nil, err
 	}
-	fmt.Fprint(stdin, "\x00")
 
 	return l.Each(func(n *Node, respond func(Response) error) error {
 
