@@ -52,7 +52,7 @@ type Request struct {
 	Command string
 
 	// Stdin Buffer
-	Stdin io.Reader
+	Stdin []byte
 
 	// Response Channel
 	Respond func(Response) error
@@ -190,7 +190,7 @@ func (n *Node) execute(req *Request, res *Response) error {
 
 		defer stdin.Close()
 
-		io.Copy(stdin, req.Stdin)
+		io.Copy(stdin, bytes.NewReader(req.Stdin))
 	}()
 
 	if err = session.Run(req.Command); err != nil {

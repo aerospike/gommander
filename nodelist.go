@@ -16,7 +16,6 @@ package gommander
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"sync"
@@ -70,7 +69,7 @@ func (l NodeList) Each(fn func(*Node, func(Response) error) error) (chan Respons
 	var wg sync.WaitGroup
 	wg.Add(len(l))
 
-	responses := make(chan Response)
+	responses := make(chan Response, len(l))
 
 	for _, n := range l {
 
@@ -107,7 +106,6 @@ func (l NodeList) Execute(req Request) (chan Response, error) {
 func (l NodeList) Run(command string) (chan Response, error) {
 	req := Request{
 		Command: command,
-		Stdin:   new(bytes.Buffer),
 	}
 
 	return l.Execute(req)
@@ -135,7 +133,7 @@ func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 
 		req := Request{
 			Command: command,
-			Stdin:   bytes.NewReader(input.Bytes()),
+			Stdin:   input.Bytes(),
 			Respond: respond,
 		}
 
@@ -146,20 +144,16 @@ func (l NodeList) Copy(src string, dest string) (chan Response, error) {
 // Write a file from at dest on each Node.
 // The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) Write(dest string, content *bytes.Reader) (chan Response, error) {
-
-	command := "cat - > " + dest
-	stdin := new(bytes.Buffer)
-
-	fmt.Fprintln(stdin, "C0755", content.Len(), dest)
-	if _, err := io.Copy(stdin, content); err != nil {
-		return nil, err
-	}
-
 	return l.Each(func(n *Node, respond func(Response) error) error {
 
+		stdin := new(bytes.Buffer)
+		if _, err := io.Copy(stdin, content); err != nil {
+			return err
+		}
+
 		req := Request{
-			Command: command,
-			Stdin:   bytes.NewReader(stdin.Bytes()),
+			Command: "cat - > " + dest,
+			Stdin:   stdin.Bytes(),
 			Respond: respond,
 		}
 
@@ -170,20 +164,10 @@ func (l NodeList) Write(dest string, content *bytes.Reader) (chan Response, erro
 // Write a file from at dest on each Node.
 // The result will be channel of Responses for each Node in the NodeList.
 func (l NodeList) WriteBytes(dest string, content []byte) (chan Response, error) {
-
-	command := "cat - > " + dest
-	stdin := new(bytes.Buffer)
-
-	fmt.Fprintln(stdin, "C0755", len(content), dest)
-	if _, err := io.Copy(stdin, bytes.NewReader(content)); err != nil {
-		return nil, err
-	}
-
 	return l.Each(func(n *Node, respond func(Response) error) error {
-
 		req := Request{
-			Command: command,
-			Stdin:   bytes.NewReader(stdin.Bytes()),
+			Command: "cat - > " + dest,
+			Stdin:   content,
 			Respond: respond,
 		}
 
