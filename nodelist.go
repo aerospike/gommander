@@ -166,3 +166,27 @@ func (l NodeList) Write(dest string, content *bytes.Reader) (chan Response, erro
 		return n.Execute(req)
 	})
 }
+
+// Write a file from at dest on each Node.
+// The result will be channel of Responses for each Node in the NodeList.
+func (l NodeList) WriteBytes(dest string, content []byte) (chan Response, error) {
+
+	command := "cat - > " + dest
+	stdin := new(bytes.Buffer)
+
+	fmt.Fprintln(stdin, "C0755", len(content), dest)
+	if _, err := io.Copy(stdin, bytes.NewReader(content)); err != nil {
+		return nil, err
+	}
+
+	return l.Each(func(n *Node, respond func(Response) error) error {
+
+		req := Request{
+			Command: command,
+			Stdin:   bytes.NewReader(stdin.Bytes()),
+			Respond: respond,
+		}
+
+		return n.Execute(req)
+	})
+}
