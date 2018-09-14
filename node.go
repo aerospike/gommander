@@ -16,11 +16,12 @@ package gommander
 
 import (
 	"bytes"
-	"code.google.com/p/go.crypto/ssh"
 	"errors"
 	"io"
 	"io/ioutil"
 	"strconv"
+
+	"golang.org/x/crypto/ssh"
 )
 
 // Node describes a server which will be managed.

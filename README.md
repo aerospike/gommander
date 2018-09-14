@@ -14,7 +14,7 @@ The following is an example of managing a cluster of Vagrant instances.
 package main
 
 import (
-	"code.google.com/p/go.crypto/ssh"
+	"golang.org/x/crypto/ssh"
 	. "github.com/aerospike/gommander"
 
 	"fmt"

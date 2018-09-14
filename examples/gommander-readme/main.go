@@ -1,8 +1,8 @@
 package main
 
 import (
-	"code.google.com/p/go.crypto/ssh"
 	. "github.com/aerospike/gommander"
+	"golang.org/x/crypto/ssh"
 
 	"fmt"
 )
